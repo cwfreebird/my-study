@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="GBK"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%p] [%t] [%c{50}] >>> %m%n</pattern>
+			<immediateFlush>false</immediateFlush>
+		</encoder>
+	</appender>
+
+	<root level="debug">
+        <appender-ref ref="STDOUT" />
+	</root>
+</configuration>
