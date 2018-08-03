@@ -1,4 +1,4 @@
-package com.cw.kafka.thread;
+package com.cw.thread;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -78,7 +78,7 @@ public class ThreadPoolTest {
     }
 
     /**
-     * LinkedBlockingDeque with limit 1
+     * SynchronousQueue
      * @throws InterruptedException
      */
     @Test

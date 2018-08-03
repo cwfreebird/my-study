@@ -11,6 +11,9 @@
     <properties>
         <logback.version>1.1.2</logback.version>
         <slf4j.version>1.7.16</slf4j.version>
+        <elastic-job-lite-core.version>2.1.5</elastic-job-lite-core.version>
+        <elastic-job-lite-spring.version>2.1.5</elastic-job-lite-spring.version>
+        <spring.version>4.3.10.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -40,10 +43,48 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>1.40</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 引入elastic-job-lite核心模块 -->
+        <dependency>
+            <groupId>com.dangdang</groupId>
+            <artifactId>elastic-job-lite-core</artifactId>
+            <version>${elastic-job-lite-core.version}</version>
+        </dependency>
+
+        <!-- 使用springframework自定义命名空间时引入 -->
+        <dependency>
+            <groupId>com.dangdang</groupId>
+            <artifactId>elastic-job-lite-spring</artifactId>
+            <version>${elastic-job-lite-spring.version}</version>
         </dependency>
     </dependencies>
 

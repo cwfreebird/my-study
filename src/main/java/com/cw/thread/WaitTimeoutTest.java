@@ -1,4 +1,4 @@
-package com.cw.kafka.thread;
+package com.cw.thread;
 
 /**
  * @author david.cai
