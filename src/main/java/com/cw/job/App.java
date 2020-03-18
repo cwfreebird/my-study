@@ -18,6 +18,7 @@ import java.io.IOException;
 public class App {
     public static void main(String[] args) throws IOException {
         //new JobScheduler(createRegistryCenter(), createJobConfiguration()).init();
+
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml"});
         context.start();
         System.in.read();
@@ -44,7 +45,7 @@ public class App {
      */
     private static CoordinatorRegistryCenter createRegistryCenter() {
         CoordinatorRegistryCenter registryCenter = new ZookeeperRegistryCenter(
-                new ZookeeperConfiguration("10.199.197.224:2181", "MyElasticJob")
+                new ZookeeperConfiguration("localhost:2181", "MyElasticJob")
         );
         registryCenter.init();
         return registryCenter;

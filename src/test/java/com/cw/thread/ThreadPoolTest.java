@@ -3,10 +3,7 @@ package com.cw.thread;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author david.cai
@@ -84,6 +81,17 @@ public class ThreadPoolTest {
     @Test
     public void pool7() throws InterruptedException {
         executor = new ThreadPoolExecutor(3, 4, 5, TimeUnit.SECONDS, new SynchronousQueue<>());
+        runTask();
+    }
+
+
+    /**
+     * SynchronousQueue
+     * @throws InterruptedException
+     */
+    @Test
+    public void arrayBlockingQueue() throws InterruptedException {
+        executor = new ThreadPoolExecutor(2, 4, 5, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2));
         runTask();
     }
 

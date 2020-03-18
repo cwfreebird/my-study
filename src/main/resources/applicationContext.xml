@@ -20,9 +20,13 @@
 
     <!--配置作业注册中心 -->
     <reg:zookeeper id="regCenter" server-lists="10.199.197.224:2181"
-                   namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+                   namespace="my-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
 
     <!-- 配置作业-->
-    <job:simple id="myElasticJob" class="com.cw.job.MyElasticJob"
-                registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="2" sharding-item-parameters="0=10000,1=10001" />
+    <job:simple id="myJob1" class="com.cw.job.MyElasticJob"
+                registry-center-ref="regCenter" cron="*/15 * * * * ?" sharding-total-count="2" sharding-item-parameters="0=10,1=20" />
+
+
+    <!--<job:simple id="myJob2" class="com.cw.job.MyElasticJob"
+                registry-center-ref="regCenter" cron="0 0 */10 * * ?" sharding-total-count="1" sharding-item-parameters="0=0" job-parameter="10000"/>-->
 </beans>
