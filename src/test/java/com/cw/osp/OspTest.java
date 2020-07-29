@@ -5,28 +5,54 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.vip.osp.sdk.context.ClientInvocationContext;
 import com.vip.osp.sdk.exception.OspException;
+import com.vip.vop.cup.api.customs.QueryCustomsClearanceReq;
+import com.vip.vop.cup.api.order.CreateOrderSnReq;
+import com.vip.vop.cup.api.order.CreateOrderSnResponse;
+import com.vip.vop.cup.api.order.DeliveryByUserReq;
+import com.vip.vop.cup.api.order.DeliveryOrder;
+import com.vip.vop.cup.api.pay.PayReq;
+import com.vip.vop.cup.api.pay.QueryPayReq;
+import com.vip.vop.logistics.ReportTraceResult;
+import com.vip.vop.logistics.ShipmentTrace;
+import com.vip.vop.logistics.ShipmentTraceList;
 import com.vip.vop.logistics.carrier.service.ReportPacketInfoResp;
+import com.vip.vop.logistics.wo.service.LogisticsWorkOrderServiceHelper;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
+import vipapis.cup.customs.CustomsClearanceServiceHelper;
+import vipapis.cup.order.OrderServiceHelper;
+import vipapis.cup.pay.PayServiceHelper;
 import vipapis.jitx.*;
 import vipapis.logistics.CarrierLogisticsService;
 import vipapis.logistics.CarrierLogisticsServiceHelper;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 @Slf4j
 public class OspTest {
 
     JitXServiceHelper.JitXServiceClient client = new JitXServiceHelper.JitXServiceClient();
-
+    OrderServiceHelper.OrderServiceClient cup = new OrderServiceHelper.OrderServiceClient();
+    PayServiceHelper.PayServiceClient cupPay = new PayServiceHelper.PayServiceClient();
+    CustomsClearanceServiceHelper.CustomsClearanceServiceClient customs = new CustomsClearanceServiceHelper.CustomsClearanceServiceClient();
+    CarrierLogisticsServiceHelper.CarrierLogisticsServiceClient carrierLogisticsService = new CarrierLogisticsServiceHelper.CarrierLogisticsServiceClient();
     @Before
     public void init(){
         ClientInvocationContext clientInvocationContext = new ClientInvocationContext();
         clientInvocationContext.setAppURL("http://sandbox.vipapis.com");
+        //clientInvocationContext.setAppURL("http://vipapis.com");
         clientInvocationContext.setAppKey("a876c4cc");
         clientInvocationContext.setAppSecret("77780A5819EC3CFBE648436DB9F95492");
         client.setClientInvocationContext(clientInvocationContext);
+        cup.setClientInvocationContext(clientInvocationContext);
+        cupPay.setClientInvocationContext(clientInvocationContext);
+        customs.setClientInvocationContext(clientInvocationContext);
+        carrierLogisticsService.setClientInvocationContext(clientInvocationContext);
     }
 
     @Test
@@ -110,7 +136,7 @@ public class OspTest {
     public void getWarehouse(){
         try {
             vipapis.jitx.GetWarehousesRequest request1 = new vipapis.jitx.GetWarehousesRequest();
-            request1.setVendor_id(1317);
+            request1.setVendor_id(550);
             System.out.println(new Gson().toJson(client.getWarehouses(request1)));
         } catch(com.vip.osp.sdk.exception.OspException e){
             e.printStackTrace();
@@ -262,5 +288,190 @@ public class OspTest {
 
         ReportPacketInfoResp a = service.reportPacketInfo("a", Lists.newArrayList());
 
+    }
+
+    @Test
+    public void reportTrace() throws OspException, IOException {
+
+        String carrierCode = "ems";
+        String json = readInputJson();
+        Gson gson = new Gson();
+        TraceTest trace = gson.fromJson(json, TraceTest.class);
+        List<ReportTraceResult> a = carrierLogisticsService.reportTrace(carrierCode, trace.getTraces());
+        //List<ReportTraceResult> a = carrierLogisticsService.reportTrace(carrierCode, initShipmentTraceList());
+
+    }
+
+    private String readInputJson() throws IOException {
+        String file = "D:\\others\\lib\\json.txt";
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        String content = "";
+        String str = "";
+        while ((str = reader.readLine()) != null){
+            content += str;
+        }
+        return content;
+    }
+
+    @Data
+    class TraceTest{
+        List<ShipmentTraceList> traces;
+    }
+
+    private List<ShipmentTraceList> initShipmentTraceList() {
+        ShipmentTraceList traceList = new ShipmentTraceList();
+
+        traceList.setLogistics_no("SF1882760748674");
+        traceList.setTraces(initTraces());
+
+        ShipmentTraceList traceList1 = new ShipmentTraceList();
+
+        traceList1.setLogistics_no("SF1882759401120");
+        traceList1.setTraces(initTraces1());
+
+        ShipmentTraceList traceList2 = new ShipmentTraceList();
+
+        traceList2.setLogistics_no("SF1882791036321");
+        traceList2.setTraces(initTraces2());
+        return Lists.newArrayList(traceList, traceList1, traceList2);
+    }
+
+    private List<ShipmentTrace> initTraces() {
+        ShipmentTrace trace = new ShipmentTrace();
+
+        trace.setTrace_code("36");
+        trace.setAction("TRANSIT");
+        trace.setRemark("快件已发车");
+        trace.setOp_time(new Date());
+        trace.setSite_code("029X");
+        trace.setSite_name("西北枢纽分拨中心");
+        trace.setLongtitude("109.018");
+        trace.setLatitude("34.520");
+        trace.setCoordinate("1");
+
+        return Lists.newArrayList(trace);
+    }
+
+    private List<ShipmentTrace> initTraces1() {
+
+        ShipmentTrace trace = new ShipmentTrace();
+
+        trace.setTrace_code("204");
+        trace.setAction("DELIVERY");
+        trace.setRemark("快件交给高栋,正在派送途中（联系电话：13335351216,顺丰已开启“安全呼叫”保护您的电话隐私,请放心接听！）");
+        trace.setOp_time(new Date());
+        trace.setSite_code("913HB");
+        trace.setSite_name("渭南韩城太史街速运营业点");
+        trace.setOperator("高栋");
+        trace.setOperator_tel("13335351216");
+        trace.setLongtitude("110.456599");
+        trace.setLatitude("35.499373");
+        trace.setCoordinate("1");
+
+        return Lists.newArrayList(trace);
+    }
+
+    private List<ShipmentTrace> initTraces2() {
+        ShipmentTrace trace = new ShipmentTrace();
+
+        trace.setTrace_code("8000");
+        trace.setAction("RECEIVER_ACCEPT");
+        trace.setRemark("在官网\"运单资料&签收图\",可查看签收人信息");
+        trace.setOp_time(new Date());
+        trace.setSite_code("028CF");
+        trace.setSite_name("资阳市简阳市丰和园营业点");
+        trace.setLongtitude("104.554729");
+        trace.setLatitude("30.368415");
+        trace.setCoordinate("1");
+
+        return Lists.newArrayList(trace);
+    }
+
+    @Test
+    public void createOrderSn() throws OspException {
+
+        CreateOrderSnReq req = new CreateOrderSnReq();
+        req.setQuantity(1);
+
+        CreateOrderSnResponse orderSn = cup.createOrderSn(req);
+
+        log.info("orderSn: {}", new Gson().toJson(orderSn));
+
+    }
+
+    @Test
+    public void queryPay() throws OspException {
+
+        QueryPayReq req = new QueryPayReq();
+        req.setPre_pay_id("1");
+
+        log.info("queryPay: {}", new Gson().toJson(cupPay.queryPay(req)));
+
+    }
+
+    @Test
+    public void pay() throws OspException {
+
+        PayReq req = new PayReq();
+        req.setPre_pay_id("1");
+        req.setVip_order_sn("12341234");
+        req.setAmount("10");
+        req.setAuth_Code("121212");
+        req.setDevice("device");
+        req.setExt("");
+        req.setScene("asdf");
+        req.setTime_expire("2020-08-12 00:00:00");
+        req.setSubject("subject");
+        log.info("queryPay: {}", new Gson().toJson(cupPay.pay(req)));
+
+    }
+
+    @Test
+    public void queryCustomsClearance() throws OspException {
+
+        QueryCustomsClearanceReq req = new QueryCustomsClearanceReq();
+        req.setStart_time("2020-01-01 00:00:00");
+        req.setEnd_time("2020-02-01 00:00:00");
+
+        log.info("queryCustomsClearance: {}", new Gson().toJson(customs.queryCustomsClearance(req)));
+    }
+
+    @Test
+    public void deliveryByUser() throws OspException {
+        DeliveryOrder order = new DeliveryOrder();
+        order.setOrder_sn("11111");
+        order.setUser_code("1");
+
+        List<DeliveryOrder> orders = Lists.newArrayList();
+
+        DeliveryByUserReq req = new DeliveryByUserReq();
+        req.setOrders(orders);
+
+        log.info("deliveryByUser: {}", new Gson().toJson(cup.deliveryByUser(req)));
+
+    }
+
+
+    @Test
+    public void reportTraces() throws OspException {
+        List<ShipmentTrace> traces = Lists.newArrayList();
+        ShipmentTrace trace = new ShipmentTrace();
+        trace.setCoordinate("1234");
+        trace.setTrace_code("1");
+        trace.setAction("30");
+        trace.setRemark("remark");
+        trace.setOp_time(new Date());
+        trace.setOperator_tel("123");
+        trace.setOperator("test");
+
+        traces.add(trace);
+
+        ShipmentTraceList traceList = new ShipmentTraceList();
+        traceList.setLogistics_no("12341234");
+        traceList.setTraces(traces);
+        List<ShipmentTraceList> lists = Lists.newArrayList();
+        lists.add(traceList);
+        carrierLogisticsService.reportTrace("ems", lists);
     }
 }

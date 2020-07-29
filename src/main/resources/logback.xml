@@ -8,7 +8,28 @@
 		</encoder>
 	</appender>
 
+	<appender name="FILE"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoding>UTF-8</encoding>
+		<prudent>false</prudent>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!--日志文件输出的文件名 -->
+			<maxHistory>5</maxHistory>
+			<fileNamePattern>/apps/logs/log_receiver/my_study.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%p] [%t] [%c{50}] >>> %m%n</pattern>
+            <immediateFlush>false</immediateFlush>
+        </encoder>
+		<!--日志文件最大的大小 -->
+		<!-- <triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>1MB</MaxFileSize>
+		</triggeringPolicy> -->
+	</appender>
+
 	<root level="debug">
         <appender-ref ref="STDOUT" />
+        <!--<appender-ref ref="FILE" />-->
 	</root>
 </configuration>

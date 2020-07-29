@@ -129,11 +129,17 @@
         </dependency>
 
         <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>test</groupId>
             <artifactId>test</artifactId>
             <version>LATEST</version>
             <scope>system</scope>
-            <systemPath>D:/others/lib/1108/osp-sdk.jar</systemPath>
+            <systemPath>D:/others/lib/0715/osp-sdk.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -141,8 +147,7 @@
             <artifactId>test1</artifactId>
             <scope>system</scope>
             <version>LATEST</version>
-            <systemPath>D:/others/lib/1108/vop-sdk.jar</systemPath>
-            <!--<systemPath>D:/project/jitx/sdk/product_sdk/vop-sdk.jar</systemPath>-->
+            <systemPath>D:/others/lib/0715/vop-sdk.jar</systemPath>
         </dependency>
 
         <!--<dependency>
