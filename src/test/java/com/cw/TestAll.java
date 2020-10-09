@@ -1,5 +1,8 @@
 package com.cw;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -48,5 +51,19 @@ public class TestAll {
             }
             map.put("k_" + i, "v" + i);
         }
+    }
+
+    @Test
+    public void string(){
+        String s = "{\"fieldCode\":\"建昌镇县委\\县政府接待办\"}";
+        Gson gson = new Gson();
+        Str s1 = gson.fromJson(s, Str.class);
+        Object parse = JSON.parse(s);
+        parse.toString();
+    }
+
+    @Data
+    class Str {
+        String fieldCode;
     }
 }

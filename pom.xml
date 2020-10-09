@@ -13,7 +13,8 @@
         <slf4j.version>1.7.16</slf4j.version>
         <elastic-job-lite-core.version>2.1.5</elastic-job-lite-core.version>
         <elastic-job-lite-spring.version>2.1.5</elastic-job-lite-spring.version>
-        <spring.version>4.3.10.RELEASE</spring.version>
+        <spring.version>4.3.18.RELEASE</spring.version>
+        <dubbo.version>2.7.8</dubbo.version>
     </properties>
 
     <dependencies>
@@ -135,35 +136,31 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-dependencies-zookeeper</artifactId>
+            <version>${dubbo.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
             <groupId>test</groupId>
             <artifactId>test</artifactId>
             <version>LATEST</version>
             <scope>system</scope>
-            <systemPath>D:/others/lib/0715/osp-sdk.jar</systemPath>
+            <systemPath>D:/others/lib/osp-sdk.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>test1</groupId>
             <artifactId>test1</artifactId>
-            <scope>system</scope>
-            <version>LATEST</version>
-            <systemPath>D:/others/lib/0715/vop-sdk.jar</systemPath>
-        </dependency>
-
-        <!--<dependency>
-            <groupId>vcloud.test</groupId>
-            <artifactId>vcloud</artifactId>
             <version>LATEST</version>
             <scope>system</scope>
-            <systemPath>D:/others/lib/osp-sdk.jar</systemPath>
-        </dependency>-->
-
-        <dependency>
-            <groupId>vcloud.test</groupId>
-            <artifactId>vpsdk</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>D:/others/lib/vp-sdk.jar</systemPath>
+            <systemPath>D:/others/sdk/lib/vop-sdk.jar</systemPath>
         </dependency>
     </dependencies>
 

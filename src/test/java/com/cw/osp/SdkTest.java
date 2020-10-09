@@ -32,8 +32,8 @@ public class SdkTest {
 
     @Test
     public void getDeliveryOrders() throws OspException {
-        for (int i = 0; i < 10; i++){
-            log.error("===================i : {}" , i);
+        for (int i = 0; i < 2; i++){
+            log.info("===================i : {}" , i);
             new Thread(new TestRunnable()).start();
         }
 
@@ -51,14 +51,14 @@ public class SdkTest {
             JitXServiceHelper.JitXServiceClient client = new JitXServiceHelper.JitXServiceClient();
 
             ClientInvocationContext clientInvocationContext = new ClientInvocationContext();
-            clientInvocationContext.setAppURL("http://sandbox.vipapis.com");
+            clientInvocationContext.setAppURL("http://vop.vipapis.com");
             clientInvocationContext.setAppKey("a876c4cc");
             clientInvocationContext.setAppSecret("77780A5819EC3CFBE648436DB9F95492");
             client.setClientInvocationContext(clientInvocationContext);
 
             GetDeliveryOrdersRequest request = new GetDeliveryOrdersRequest();
             request.setVendor_id(550);
-            request.setStart_time(new Date().getTime() / 1000);
+            request.setStart_time((new Date().getTime() - 60 * 1000) / 1000);
             request.setEnd_time(new Date().getTime() / 1000);
             request.setLimit(200);
             request.setPage(1);
@@ -66,7 +66,7 @@ public class SdkTest {
 
 
             try {
-                for (int i = 0; i < 1000000; i++) {
+                for (int i = 0; i < 1; i++) {
                     GetDeliveryOrdersResponse result = client.getDeliveryOrders(request);
                     log.info("result: {}", new Gson().toJson(result));
                 }
@@ -78,8 +78,8 @@ public class SdkTest {
 
     @Test
     public void getFullAddress() throws OspException {
-        for (int i = 0; i < 150; i++){
-            log.error("===================getFullAddress : {}" , i);
+        for (int i = 0; i < 2; i++){
+            //log.error("===================getFullAddress : {}" , i);
             new Thread(new AddressTestRunnable()).start();
         }
 
@@ -97,19 +97,19 @@ public class SdkTest {
             AddressServiceHelper.AddressServiceClient client = new AddressServiceHelper.AddressServiceClient();
 
             ClientInvocationContext clientInvocationContext = new ClientInvocationContext();
-            clientInvocationContext.setAppURL("https://gw.vipapis.com");
+            clientInvocationContext.setAppURL("https://vop.vipapis.com");
             clientInvocationContext.setAppKey("da2f39f2");
             clientInvocationContext.setAppSecret("F8B240BFD609CFBAC9A78C5B67A77BB0");
             client.setClientInvocationContext(clientInvocationContext);
 
-            /*try {
-                for (int i = 0; i < 100; i++) {
+            try {
+                //for (int i = 0; i < 100; i++) {
                     FullAddress fullAddress = client.getFullAddress("914101101101", Is_Show_GAT.SHOW_GAT, false);
                     log.info("fullAddress: {}", new Gson().toJson(fullAddress));
-                }
+                //}
             } catch (Exception e) {
                 log.error("error : {}", e);
-            }*/
+            }
         }
     }
 }

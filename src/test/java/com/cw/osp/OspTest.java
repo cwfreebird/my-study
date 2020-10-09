@@ -16,14 +16,19 @@ import com.vip.vop.logistics.ReportTraceResult;
 import com.vip.vop.logistics.ShipmentTrace;
 import com.vip.vop.logistics.ShipmentTraceList;
 import com.vip.vop.logistics.carrier.service.ReportPacketInfoResp;
-import com.vip.vop.logistics.wo.service.LogisticsWorkOrderServiceHelper;
+import com.vip.wpc.ospservice.vop.WpcVopOspServiceHelper;
+import com.vip.wpc.ospservice.vop.request.WpcBrandListRequest;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
+import vipapis.activity.ActivityServiceHelper;
+import vipapis.activity.CheckInResult;
 import vipapis.cup.customs.CustomsClearanceServiceHelper;
 import vipapis.cup.order.OrderServiceHelper;
 import vipapis.cup.pay.PayServiceHelper;
+import vipapis.delivery.CreatePoDeliveryReq;
+import vipapis.delivery.JitDeliveryServiceHelper;
 import vipapis.jitx.*;
 import vipapis.logistics.CarrierLogisticsService;
 import vipapis.logistics.CarrierLogisticsServiceHelper;
@@ -41,11 +46,15 @@ public class OspTest {
     PayServiceHelper.PayServiceClient cupPay = new PayServiceHelper.PayServiceClient();
     CustomsClearanceServiceHelper.CustomsClearanceServiceClient customs = new CustomsClearanceServiceHelper.CustomsClearanceServiceClient();
     CarrierLogisticsServiceHelper.CarrierLogisticsServiceClient carrierLogisticsService = new CarrierLogisticsServiceHelper.CarrierLogisticsServiceClient();
+    ActivityServiceHelper.ActivityServiceClient activityServiceClient = new ActivityServiceHelper.ActivityServiceClient();
+    JitDeliveryServiceHelper.JitDeliveryServiceClient jitDeliveryServiceClient = new JitDeliveryServiceHelper.JitDeliveryServiceClient();
+    WpcVopOspServiceHelper.WpcVopOspServiceClient wpcClient = new WpcVopOspServiceHelper.WpcVopOspServiceClient();
     @Before
     public void init(){
         ClientInvocationContext clientInvocationContext = new ClientInvocationContext();
-        clientInvocationContext.setAppURL("http://sandbox.vipapis.com");
-        //clientInvocationContext.setAppURL("http://vipapis.com");
+        //clientInvocationContext.setAppURL("http://localhost:8080");
+        //clientInvocationContext.setAppURL("http://sandbox.vipapis.com");
+        clientInvocationContext.setAppURL("http://vipapis.com");
         clientInvocationContext.setAppKey("a876c4cc");
         clientInvocationContext.setAppSecret("77780A5819EC3CFBE648436DB9F95492");
         client.setClientInvocationContext(clientInvocationContext);
@@ -53,6 +62,9 @@ public class OspTest {
         cupPay.setClientInvocationContext(clientInvocationContext);
         customs.setClientInvocationContext(clientInvocationContext);
         carrierLogisticsService.setClientInvocationContext(clientInvocationContext);
+        activityServiceClient.setClientInvocationContext(clientInvocationContext);
+        jitDeliveryServiceClient.setClientInvocationContext(clientInvocationContext);
+        wpcClient.setClientInvocationContext(clientInvocationContext);
     }
 
     @Test
@@ -60,7 +72,7 @@ public class OspTest {
         try{
             GetDeliveryOrdersRequest request = new GetDeliveryOrdersRequest();
             request.setVendor_id(550);
-            request.setStart_time(new Date().getTime() / 1000);
+            request.setStart_time((new Date().getTime() - 60 * 1000) / 1000);
             request.setEnd_time(new Date().getTime() / 1000);
             request.setLimit(200);
             request.setPage(1);
@@ -473,5 +485,35 @@ public class OspTest {
         List<ShipmentTraceList> lists = Lists.newArrayList();
         lists.add(traceList);
         carrierLogisticsService.reportTrace("ems", lists);
+    }
+
+    @Test
+    public void checkInV3() throws OspException {
+        CheckInResult checkInResult = activityServiceClient.checkInV3("1", "1");
+        log.info("{}", checkInResult);
+    }
+
+    @Test
+    public void createPoDeliveryV2() throws OspException {
+        CreatePoDeliveryReq req = new CreatePoDeliveryReq();
+        req.setArrival_time("2020-09-01 16:00:00");
+        req.setCarrier_code("120000831");
+        req.setDelivery_method("2");
+        req.setDelivery_time("2020-08-31 20:00:00");
+        req.setDelivery_warehouse("SPD0002109");
+        req.setIs_air_embargo(0);
+        req.setLogistics_no("MD1988951358752955702");
+        req.setPo_nos(Lists.newArrayList("2102354370"));
+        req.setVendor_id(28849);
+        req.setWarehouse("VIP_HZ");
+        jitDeliveryServiceClient.createPoDeliveryV2(req);
+    }
+
+    @Test
+    public void wpcTest() throws OspException {
+        WpcBrandListRequest req = new WpcBrandListRequest();
+        req.setPage(1);
+        req.setPageSize(1);
+        wpcClient.getBrandList(req);
     }
 }

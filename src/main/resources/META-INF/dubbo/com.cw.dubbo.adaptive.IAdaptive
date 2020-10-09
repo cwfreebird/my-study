@@ -1,0 +1,3 @@
+dubbo=com.cw.dubbo.adaptive.DubboAdaptiveImpl
+spring=com.cw.dubbo.adaptive.SpringAdaptiveImpl
+thrift=com.cw.dubbo.adaptive.ThriftAdaptiveImpl
